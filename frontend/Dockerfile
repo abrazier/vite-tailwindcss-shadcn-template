@@ -1,16 +1,24 @@
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json .
-# COPY package-lock.json .
+# Copy package files
+COPY package.json package-lock.json* ./
 
-# Install dependencies with platform-specific settings
-RUN npm install --platform=linux --arch=x64
+# Install dependencies
+RUN npm ci
 
+# Copy source
 COPY . .
 
+# Development stage
+FROM builder AS dev
 EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
 
-# Add host flag to allow external connections
-CMD [ "npm", "run", "dev", "--", "--host" ]
+# Production stage
+FROM builder AS prod
+RUN npm run build
+EXPOSE 5173
+CMD ["npm", "run", "preview", "--", "--host"]

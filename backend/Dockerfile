@@ -16,12 +16,12 @@ COPY . .
 
 ENV PYTHONPATH=/app
 
-# # Create non-root user
-# RUN addgroup --system --gid 1001 celery && \
-#     adduser --system --uid 1001 --gid 1001 --no-create-home celery
+# Create non-root user
+RUN addgroup --system --gid 1001 celery && \
+    adduser --system --uid 1001 --gid 1001 --no-create-home celery
 
-# # Set ownership of the app directory
-# RUN chown -R celery:celery /app
+# Set ownership of the app directory
+RUN chown -R celery:celery /app
 
-# # Switch to non-root user
-# USER celery
+# Switch to non-root user
+USER celery
